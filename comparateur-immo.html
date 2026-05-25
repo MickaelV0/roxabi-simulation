@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Acheter ou Louer + Investir ? — Roxabi Simulation</title>
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/comparateur-immo.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<nav class="topbar">
+  <a class="topbar-logo" href="index.html">
+    <svg width="20" height="20" viewBox="0 0 240 170" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <polygon points="120,14 182,82 156,142 120,158 84,142 58,82" fill="none" stroke="currentColor" stroke-width="8" stroke-opacity="0.6"/>
+      <circle cx="120" cy="95" r="20" fill="currentColor" opacity="0.3"/>
+      <circle cx="120" cy="95" r="6" fill="currentColor"/>
+    </svg>
+    Roxabi Simulation
+  </a>
+  <button id="theme-toggle" aria-label="Changer le thème" title="Changer le thème">◑</button>
+</nav>
+
+<div class="container">
+  <h1>Acheter ou Louer + Investir ?</h1>
+  <p class="subtitle">Comparez l'achat d'un bien immobilier avec la stratégie "louer et investir la différence" sur un horizon donné.</p>
+
+  <div class="two-col">
+    <!-- Colonne Achat -->
+    <div class="card param-card">
+      <h2>Paramètres achat</h2>
+      <label for="prix">Prix du bien (€)</label>
+      <input id="prix" type="number" min="0" step="1000" placeholder="300000" value="300000">
+
+      <label for="notaire">Frais de notaire (€)</label>
+      <input id="notaire" type="number" min="0" step="100" placeholder="24000" value="24000">
+
+      <label for="apport">Apport (€)</label>
+      <input id="apport" type="number" min="0" step="1000" placeholder="50000" value="50000">
+
+      <div class="row">
+        <div>
+          <label for="taux-credit">Taux crédit (% annuel)</label>
+          <input id="taux-credit" type="number" min="0" step="0.05" placeholder="3.5" value="3.5">
+        </div>
+        <div>
+          <label for="duree-credit">Durée (années)</label>
+          <input id="duree-credit" type="number" min="1" max="30" step="1" placeholder="20" value="20">
+        </div>
+      </div>
+
+      <label for="travaux">Travaux (€)</label>
+      <input id="travaux" type="number" min="0" step="1000" placeholder="0" value="0">
+
+      <div class="row">
+        <div>
+          <label for="entretien">Entretien annuel (€)</label>
+          <input id="entretien" type="number" min="0" step="100" placeholder="1500" value="1500">
+        </div>
+        <div>
+          <label for="taxe">Taxe foncière annuelle (€)</label>
+          <input id="taxe" type="number" min="0" step="100" placeholder="1200" value="1200">
+        </div>
+      </div>
+
+      <label for="plus-value">Plus-value annuelle du bien (%)</label>
+      <input id="plus-value" type="number" min="-10" max="20" step="0.1" placeholder="3" value="3">
+    </div>
+
+    <!-- Colonne Location -->
+    <div class="card param-card">
+      <h2>Paramètres location</h2>
+      <label for="loyer">Loyer mensuel (€)</label>
+      <input id="loyer" type="number" min="0" step="50" placeholder="1200" value="1200">
+
+      <label for="charges-loc">Charges locatives mensuelles (€)</label>
+      <input id="charges-loc" type="number" min="0" step="10" placeholder="100" value="100">
+
+      <label for="rendement">Rendement placement (% annuel)</label>
+      <input id="rendement" type="number" min="0" max="20" step="0.5" placeholder="5" value="5">
+
+      <div style="margin-top:auto; padding-top: 12px;">
+        <label for="horizon">Horizon de comparaison (années)</label>
+        <input id="horizon" type="number" min="1" max="50" step="1" placeholder="20" value="20">
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center; margin: 20px 0;">
+    <button id="btn-calc">Comparer les stratégies</button>
+  </div>
+
+  <div id="result-section" class="hidden">
+    <div class="card">
+      <h2 style="margin:0 0 12px; color:var(--accent);">Évolution du patrimoine net</h2>
+      <div class="chart-wrap">
+        <canvas id="patrimoine-chart"></canvas>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 style="margin:0 0 12px; color:var(--accent);">Détail année par année</h2>
+      <div class="table-wrap">
+        <table id="result-table">
+          <thead>
+            <tr>
+              <th>Année</th>
+              <th>Patrimoine achat</th>
+              <th>Patrimoine location</th>
+              <th>Différence</th>
+              <th>Meilleure stratégie</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-brand">
+    <svg width="16" height="14" viewBox="0 0 240 170" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <polygon points="120,14 182,82 156,142 120,158 84,142 58,82" fill="none" stroke="currentColor" stroke-width="8" stroke-opacity="0.5"/>
+      <circle cx="120" cy="95" r="20" fill="currentColor" opacity="0.3"/>
+    </svg>
+    Made with love by Roxabi
+  </div>
+  <div class="footer-links">
+    <a href="https://github.com/MickaelV0/roxabi-simulation" target="_blank" rel="noopener">GitHub</a>
+    <span class="footer-sep">&#183;</span>
+    <a href="index.html">Accueil</a>
+    <span class="footer-sep">&#183;</span>
+    <a href="simulateur.html">Calculateur</a>
+  </div>
+</footer>
+
+<script src="js/theme.js"></script>
+<script type="module" src="js/comparateur-immo.js"></script>
+</body>
+</html>
