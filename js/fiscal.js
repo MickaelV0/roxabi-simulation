@@ -1,4 +1,4 @@
-import { BAREMES, ABATTEMENT_MICRO } from './data.js';
+import { DATA } from './data.js';
 import { fmtEUR, fmtPct } from './format.js';
 
 export function getInputs() {
@@ -29,7 +29,7 @@ export function calcImpotsParTranche(qf, tranches) {
   let precedent = 0;
   const lignes = [];
   for (const tr of tranches) {
-    const plafond = tr.max;
+    const plafond = tr.max ?? Infinity;
     const taux = tr.taux;
     const base = Math.min(Math.max(reste, 0), plafond - precedent);
     const montant = base * taux;
@@ -48,9 +48,9 @@ export function calcImpotsParTranche(qf, tranches) {
 }
 
 export function computeFiscal(d) {
-  const tranches = BAREMES[d.annee] || BAREMES[2026];
+  const tranches = DATA.baremes[d.annee] || DATA.baremes['2026'];
 
-  const abattement = ABATTEMENT_MICRO[d.microType] || 0;
+  const abattement = DATA.micro[d.microType] || 0;
   const microImposable = d.microCa * (1 - abattement);
 
   let divImposable = 0;

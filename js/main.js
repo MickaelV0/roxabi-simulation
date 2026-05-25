@@ -1,3 +1,4 @@
+import { loadData } from './data.js';
 import { getInputs, setInputs, computeFiscal } from './fiscal.js';
 import { renderResults, buildModal, setupToggle, setupModal } from './ui.js';
 import { initTab, save, load, remove, rename, getAllSims } from './storage.js';
@@ -32,7 +33,7 @@ function updateSimName() {
   if (input) input.value = current?.name || '';
 }
 
-function run() {
+async function run() {
   const inputs = getInputs();
   const result = computeFiscal(inputs);
   renderResults(result);
@@ -42,55 +43,61 @@ function run() {
   populateSelector();
 }
 
-// Restore saved data on load
-const saved = load(tabId);
-if (saved) {
-  setInputs(saved);
-  run();
+async function init() {
+  await loadData();
+
+  // Restore saved data on load
+  const saved = load(tabId);
+  if (saved) {
+    setInputs(saved);
+    await run();
+  }
+
+  populateSelector();
+  updateSimName();
+
+  setupToggle();
+  setupModal();
+
+  document.getElementById('btn-calc').addEventListener('click', () => {
+    hasCalculatedOnce = true;
+    run();
+  });
+
+  const inputEls = document.querySelectorAll('#annee, #parts, #salaire, #micro-ca, #micro-type, #div-brut, #div-mode');
+  inputEls.forEach(el => {
+    el.addEventListener('input', () => { if (hasCalculatedOnce) run(); });
+    el.addEventListener('change', () => { if (hasCalculatedOnce) run(); });
+  });
+
+  document.getElementById('sim-selector')?.addEventListener('change', (e) => {
+    if (e.target.value) {
+      history.replaceState(null, '', '#' + e.target.value);
+      window.location.reload();
+    }
+  });
+
+  document.getElementById('btn-new-sim')?.addEventListener('click', () => {
+    history.replaceState(null, '', '#');
+    window.location.reload();
+  });
+
+  document.getElementById('sim-name')?.addEventListener('change', (e) => {
+    rename(tabId, e.target.value.trim());
+    populateSelector();
+  });
+
+  document.getElementById('btn-delete-sim')?.addEventListener('click', () => {
+    if (!confirm('Supprimer cette simulation ?')) return;
+    remove(tabId);
+    const remaining = getAllSims();
+    if (remaining.length > 0) {
+      history.replaceState(null, '', '#' + remaining[0].id);
+    } else {
+      history.replaceState(null, '', '#');
+    }
+    window.location.reload();
+  });
 }
 
-populateSelector();
-updateSimName();
-
-setupToggle();
-setupModal();
-
-document.getElementById('btn-calc').addEventListener('click', () => {
-  hasCalculatedOnce = true;
-  run();
-});
-
-const inputEls = document.querySelectorAll('#annee, #parts, #salaire, #micro-ca, #micro-type, #div-brut, #div-mode');
-inputEls.forEach(el => {
-  el.addEventListener('input', () => { if (hasCalculatedOnce) run(); });
-  el.addEventListener('change', () => { if (hasCalculatedOnce) run(); });
-});
-
-document.getElementById('sim-selector')?.addEventListener('change', (e) => {
-  if (e.target.value) {
-    history.replaceState(null, '', '#' + e.target.value);
-    window.location.reload();
-  }
-});
-
-document.getElementById('btn-new-sim')?.addEventListener('click', () => {
-  history.replaceState(null, '', '#');
-  window.location.reload();
-});
-
-document.getElementById('sim-name')?.addEventListener('change', (e) => {
-  rename(tabId, e.target.value.trim());
-  populateSelector();
-});
-
-document.getElementById('btn-delete-sim')?.addEventListener('click', () => {
-  if (!confirm('Supprimer cette simulation ?')) return;
-  remove(tabId);
-  const remaining = getAllSims();
-  if (remaining.length > 0) {
-    history.replaceState(null, '', '#' + remaining[0].id);
-  } else {
-    history.replaceState(null, '', '#');
-  }
-  window.location.reload();
-});
+init();
