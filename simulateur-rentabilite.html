@@ -38,6 +38,12 @@
   <h1>Rentabilité locative</h1>
   <p class="subtitle">Analysez la rentabilité brute et nette d'un bien locatif : loyers, charges, crédit, cash-flow et valeur de revente.</p>
 
+  <div class="mode-toggle" role="tablist" aria-label="Mode d'affichage">
+    <button type="button" id="mode-simple" class="active" role="tab" aria-selected="true">Mode simple</button>
+    <button type="button" id="mode-advanced" role="tab" aria-selected="false">Mode avancé</button>
+  </div>
+  <p class="mode-hint simple-only">Mode simple : 6 champs essentiels pour une estimation rapide. Bascule vers <strong>Avancé</strong> pour ajuster vacance, inflation, différé, charges détaillées, etc.</p>
+
   <div class="layout-grid">
     <div class="inputs-col">
 
@@ -47,47 +53,59 @@
         <label for="prix">Prix du bien FAI (€)</label>
         <input id="prix" type="number" min="0" step="1000" placeholder="200000" value="200000">
 
-        <label for="notaire-pct">Frais de notaire (%)</label>
-        <input id="notaire-pct" type="number" min="0" max="20" step="0.1" placeholder="7" value="7">
-        <span class="live-display" id="notaire-display">≈ 14 000 €</span>
+        <div class="advanced-only">
+          <label for="notaire-pct">Frais de notaire (%)</label>
+          <input id="notaire-pct" type="number" min="0" max="20" step="0.1" placeholder="7" value="7">
+          <span class="live-display" id="notaire-display">≈ 14 000 €</span>
 
-        <label for="agence-pct">Frais d'agence (%)</label>
-        <input id="agence-pct" type="number" min="0" max="10" step="0.1" placeholder="0" value="0">
-        <span class="live-display" id="agence-display">≈ 0 €</span>
+          <label for="agence-pct">Frais d'agence (%)</label>
+          <input id="agence-pct" type="number" min="0" max="10" step="0.1" placeholder="0" value="0">
+          <span class="live-display" id="agence-display">≈ 0 €</span>
+        </div>
 
         <div class="row">
-          <div>
+          <div class="advanced-only">
             <label for="travaux">Travaux (€)</label>
             <input id="travaux" type="number" min="0" step="1000" placeholder="0" value="0">
           </div>
-          <div>
+          <div class="advanced-only">
             <label for="meubles">Meubles (€)</label>
             <input id="meubles" type="number" min="0" step="1000" placeholder="0" value="0">
           </div>
         </div>
 
         <div class="row">
-          <div>
+          <div class="advanced-only">
             <label for="superficie">Superficie (m²)</label>
             <input id="superficie" type="number" min="0" step="1" placeholder="50" value="50">
           </div>
-          <div>
+          <div class="advanced-only">
             <label for="inflation-revente">Inflation annuelle revente (%)</label>
             <input id="inflation-revente" type="number" min="-5" max="20" step="0.1" placeholder="2" value="2">
           </div>
         </div>
 
-        <div class="differe-row" style="margin-bottom:6px;">
-          <label for="cashflow-rate" style="margin-bottom:0;">Rendement appliqué au cashflow (% annuel)</label>
-          <button type="button" class="info-tooltip" data-tooltip="Taux annuel auquel les cashflows annuels (loyer − charges − mensualité) sont composés pour le calcul du montant récupéré. Représente le coût d'opportunité du capital de l'investisseur. Le TRI, lui, est indépendant de ce taux." aria-label="Aide rendement cashflow">i</button>
+        <div class="advanced-only">
+          <div class="differe-row" style="margin-bottom:6px;">
+            <label for="cashflow-rate" style="margin-bottom:0;">Taux placement alternatif (% annuel)</label>
+            <button type="button" class="info-tooltip" data-tooltip="Taux annuel du placement de comparaison. On simule une stratégie où l'apport est placé à ce taux, puis chaque année où l'immo aurait coûté du cash (CF négatif), on dépose le même montant dans ce placement. La courbe 'Placement alternatif' du chart suit cette stratégie. Le TRI, lui, est indépendant de ce taux." aria-label="Aide taux placement alternatif">i</button>
+          </div>
+          <input id="cashflow-rate" type="number" min="0" max="20" step="0.1" placeholder="5" value="5">
         </div>
-        <input id="cashflow-rate" type="number" min="0" max="20" step="0.1" placeholder="5" value="5">
 
         <div class="differe-row" style="margin-bottom:6px;">
-          <label for="horizon-rendement" style="margin-bottom:0;">Horizon d'évaluation (années)</label>
-          <button type="button" class="info-tooltip" data-tooltip="Année à laquelle on lit la rentabilité brute/nette et le cash-flow mensuel. Le loyer est indexé chaque année (augmentation annuelle) donc ces KPIs évoluent avec le temps. Le chart Performance investisseur, lui, balaie 0 → 20 ans." aria-label="Aide horizon d'évaluation">i</button>
+          <label for="chart-horizon" style="margin-bottom:0;">Horizon graphique (années)</label>
+          <button type="button" class="info-tooltip" data-tooltip="Nombre d'années affichées sur le chart Performance investisseur et sur la table synthèse. Min 1, max 40." aria-label="Aide horizon graphique">i</button>
         </div>
-        <input id="horizon-rendement" type="number" min="0" max="20" step="1" placeholder="5" value="5">
+        <input id="chart-horizon" type="number" min="1" max="40" step="1" placeholder="20" value="20">
+
+        <div class="advanced-only">
+          <div class="differe-row" style="margin-bottom:6px;">
+            <label for="horizon-rendement" style="margin-bottom:0;">Horizon d'évaluation (années)</label>
+            <button type="button" class="info-tooltip" data-tooltip="Année à laquelle on lit la rentabilité brute/nette et le cash-flow mensuel. Loyer et charges sont indexés chaque année donc ces KPIs évoluent avec le temps. Le chart Performance investisseur, lui, balaie 0 → horizon graphique. En mode simple, cet horizon est synchronisé avec l'horizon graphique." aria-label="Aide horizon d'évaluation">i</button>
+          </div>
+          <input id="horizon-rendement" type="number" min="0" max="40" step="1" placeholder="5" value="5">
+        </div>
       </div>
 
       <!-- Revenus locatifs -->
@@ -97,11 +115,11 @@
         <input id="loyer" type="number" min="0" step="50" placeholder="900" value="900">
 
         <div class="row">
-          <div>
+          <div class="advanced-only">
             <label for="vacance">Vacance locative</label>
             <input id="vacance" type="number" min="0" step="0.01" placeholder="1" value="1">
           </div>
-          <div>
+          <div class="advanced-only">
             <label for="vacance-unit">&nbsp;</label>
             <select id="vacance-unit" class="unit-select">
               <option value="mois">mois / an</option>
@@ -110,8 +128,10 @@
           </div>
         </div>
 
-        <label for="augmentation-loyer">Augmentation annuelle loyer (%)</label>
-        <input id="augmentation-loyer" type="number" min="-5" max="20" step="0.1" placeholder="1.5" value="1.5">
+        <div class="advanced-only">
+          <label for="augmentation-loyer">Augmentation annuelle loyer (%)</label>
+          <input id="augmentation-loyer" type="number" min="-5" max="20" step="0.1" placeholder="1.5" value="1.5">
+        </div>
       </div>
 
     </div><!-- /inputs-col col 1 -->
@@ -136,32 +156,34 @@
             <label for="taux-credit">Taux emprunt (%)</label>
             <input id="taux-credit" type="number" min="0" step="0.05" placeholder="3.5" value="3.5">
           </div>
-          <div>
+          <div class="advanced-only">
             <label for="taux-assurance">Taux assurance (%)</label>
             <input id="taux-assurance" type="number" min="0" step="0.05" placeholder="0.3" value="0.3">
           </div>
         </div>
 
-        <div class="differe-row" style="margin-bottom:10px;">
-          <label for="differe" style="margin-bottom:0;">Différé</label>
-          <select id="differe">
-            <option value="aucun">Aucun</option>
-            <option value="partiel">Partiel</option>
-            <option value="total">Total</option>
-          </select>
-          <button type="button" class="info-tooltip" data-tooltip="Partiel = vous payez uniquement les intérêts pendant le différé. Total = 0 € mensualité, les intérêts s'ajoutent au capital." aria-label="Aide différé crédit">i</button>
-        </div>
-        <div id="differe-duree-wrap" class="hidden">
-          <label for="differe-duree">Durée du différé (mois)</label>
-          <input id="differe-duree" type="number" min="1" max="60" step="1" placeholder="12" value="12">
+        <div class="advanced-only">
+          <div class="differe-row" style="margin-bottom:10px;">
+            <label for="differe" style="margin-bottom:0;">Différé</label>
+            <select id="differe">
+              <option value="aucun">Aucun</option>
+              <option value="partiel">Partiel</option>
+              <option value="total">Total</option>
+            </select>
+            <button type="button" class="info-tooltip" data-tooltip="Partiel = vous payez uniquement les intérêts pendant le différé. Total = 0 € mensualité, les intérêts s'ajoutent au capital." aria-label="Aide différé crédit">i</button>
+          </div>
+          <div id="differe-duree-wrap" class="hidden">
+            <label for="differe-duree">Durée du différé (mois)</label>
+            <input id="differe-duree" type="number" min="1" max="60" step="1" placeholder="12" value="12">
+          </div>
         </div>
 
         <div class="row">
-          <div>
+          <div class="advanced-only">
             <label for="frais-dossier">Frais de dossier (€)</label>
             <input id="frais-dossier" type="number" min="0" step="100" placeholder="500" value="500">
           </div>
-          <div>
+          <div class="advanced-only">
             <label for="garantie">Garantie (€)</label>
             <input id="garantie" type="number" min="0" step="100" placeholder="0" value="0">
           </div>
@@ -176,7 +198,22 @@
       <!-- Charges -->
       <div class="card param-card">
         <h2>Charges</h2>
-        <div class="charges-grid">
+
+        <div class="simple-only">
+          <label for="charge-simple">Charges annuelles totales (€/an)</label>
+          <input id="charge-simple" type="number" min="0" step="50" placeholder="1835" value="1835">
+          <span class="live-display">Forfait simplifié : copro + PNO + taxe foncière + divers. Bascule en mode avancé pour détailler.</span>
+        </div>
+
+        <div class="advanced-only">
+          <div class="differe-row" style="margin-bottom:6px;">
+            <label for="inflation-charges" style="margin-bottom:0;">Inflation annuelle charges (%)</label>
+            <button type="button" class="info-tooltip" data-tooltip="Toutes les charges (copro, taxe foncière, PNO, etc.) sont indexées chaque année à ce taux : charges(t) = charges × (1 + inflation)^t." aria-label="Aide inflation charges">i</button>
+          </div>
+          <input id="inflation-charges" type="number" min="-5" max="20" step="0.1" placeholder="1.5" value="1.5">
+        </div>
+
+        <div class="charges-grid advanced-only">
           <div class="charge-item">
             <label for="charge-copro">Charges de copro</label>
             <div class="charge-row">
@@ -309,6 +346,11 @@
             </div>
           </div>
         </div>
+
+        <div class="charges-totales-row">
+          <span class="charges-totales-label">Dépenses totales mensuelles (charges)</span>
+          <span class="charges-totales-value" id="charges-totales-display">—</span>
+        </div>
       </div>
 
     </div><!-- /inputs-col -->
@@ -358,6 +400,7 @@
         <div class="chart-wrap">
           <canvas id="renta-chart"></canvas>
         </div>
+        <div id="chart-legend" class="chart-legend"></div>
       </div>
 
       <div class="card">
@@ -376,6 +419,10 @@
             <tbody></tbody>
           </table>
         </div>
+      </div>
+
+      <div class="fiscal-note">
+        <strong>⚠ Note :</strong> pour l'instant, la <strong>partie fiscale n'est pas incluse</strong> dans le calcul (revenus locatifs imposables IR + prélèvements sociaux, micro-foncier / LMNP / réel, plus-value immobilière, IFI…). Le TRI et le montant récupéré affichés sont donc des valeurs <strong>brutes avant fiscalité</strong>. Selon votre régime, le rendement net après impôt peut être significativement plus faible.
       </div>
 
       <div class="source-badge">

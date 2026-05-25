@@ -101,6 +101,51 @@
   margin-top: 12px;
 }
 
+.chart-legend {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  margin-top: 14px;
+  padding: 8px 4px 2px;
+}
+.chart-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+.chart-legend-item .legend-swatch {
+  width: 18px;
+  height: 3px;
+  border-radius: 2px;
+  display: inline-block;
+  flex: none;
+}
+.chart-legend-item .legend-swatch--dashed {
+  background: transparent !important;
+  border-top: 3px dashed #a78bfa;
+  height: 0;
+  border-radius: 0;
+}
+.chart-legend-item .info-tooltip {
+  margin-left: 2px;
+}
+
+.fiscal-note {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-left: 3px solid #f59e0b;
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  margin-top: 16px;
+  font-size: 0.88rem;
+  color: var(--text);
+  line-height: 1.5;
+}
+.fiscal-note strong { color: #f59e0b; }
+
 .table-wrap {
   overflow-x: auto;
   margin-top: 12px;
@@ -189,7 +234,7 @@
   gap: 6px;
 }
 
-.credit-mensualite-row {
+.credit-mensualite-row, .charges-totales-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -201,12 +246,53 @@
   border-left: 3px solid var(--accent);
   border-radius: var(--radius);
 }
-.credit-mensualite-label {
+.credit-mensualite-label, .charges-totales-label {
   font-size: 0.85rem;
   color: var(--text-muted);
 }
-.credit-mensualite-value {
+.credit-mensualite-value, .charges-totales-value {
   font-size: 1.05rem;
   font-weight: 700;
   color: var(--accent);
 }
+
+/* Mode toggle (simple / avancé) */
+.mode-toggle {
+  display: inline-flex;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 3px;
+  margin: 12px 0 4px;
+  gap: 2px;
+}
+.mode-toggle button {
+  padding: 6px 14px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: calc(var(--radius) - 3px);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background 0.15s, color 0.15s;
+}
+.mode-toggle button:hover { color: var(--text); }
+.mode-toggle button.active {
+  background: var(--accent);
+  color: var(--bg);
+}
+.mode-hint {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin: 0 0 12px;
+}
+
+/* Simple mode: hide advanced fields, collapse mixed rows to single col */
+body[data-renta-mode="simple"] .advanced-only { display: none !important; }
+body[data-renta-mode="simple"] .row:has(> .advanced-only) { grid-template-columns: 1fr; }
+/* Row hidden only if ALL children are advanced (no always-visible child remains) */
+body[data-renta-mode="simple"] .row:not(:has(> :not(.advanced-only))) { display: none; }
+
+/* Advanced mode: hide simple-only widgets */
+body[data-renta-mode="advanced"] .simple-only { display: none !important; }
