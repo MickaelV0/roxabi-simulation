@@ -2,38 +2,59 @@
 
 ## Projet
 
-Simulateur fiscal + comparateur d'investissements (HTML/CSS/JS vanilla, côté client).
+Suite de simulateurs patrimoniaux côté client (HTML/CSS/JS vanilla).
+
+| Simulateur | Page | État |
+|---|---|---|
+| Calculateur d'impôt (TMI) | `simulateur.html` | Live |
+| Comparateur immobilier (acheter vs louer + investir) | `comparateur-immo.html` | Live |
+| Comparateur multi-investissements (ETF, SCPI, PER...) | _placeholder_ | Bientôt |
 
 ## Stack
 
 - HTML5 / CSS3 / Vanilla JavaScript ES modules (`type="module"`)
 - Pas de framework frontend ni de build step
+- Chart.js via CDN pour les graphes (`comparateur-immo.html`)
 - Hébergement : Cloudflare Pages (projet `invest-sim`)
 
 ## Structure des fichiers
 
 ```
 roxabi-simulation/
-├── index.html        Shell + markup
-├── css/main.css      Tous les styles
+├── index.html                  Landing page (3 CTAs)
+├── simulateur.html             Calculateur d'impôt
+├── comparateur-immo.html       Comparateur immobilier
+├── css/
+│   ├── main.css                Styles globaux + simulateur impôt + modal + topbar/footer
+│   ├── landing.css             Styles landing page
+│   └── comparateur-immo.css    Styles comparateur immo (two-col, chart, table)
 ├── js/
-│   ├── main.js       Point d'entrée (events, orchestration)
-│   ├── data.js       Données : barèmes IR par année, abattements micro-entreprise
-│   ├── format.js     Formatteurs EUR / pourcentage
-│   ├── fiscal.js     Logique pure : calcul TMI, QF, impôt
-│   └── ui.js         DOM : rendu résultats, modal, toggle collapse
+│   ├── main.js                 Orchestration calculateur impôt
+│   ├── fiscal.js               Logique fiscale pure (IR, QF, TMI)
+│   ├── ui.js                   DOM calculateur impôt (résultats, modal, toggle)
+│   ├── data.js                 Loader JSON barèmes IR + abattements micro
+│   ├── format.js               Formatteurs EUR / pourcentage
+│   ├── storage.js              Persistance localStorage (max 5 sims nommées)
+│   ├── theme.js                Toggle dark/light (data-theme)
+│   └── comparateur-immo.js     Logique + graphe comparateur immobilier
+├── data/
+│   ├── baremes.json            Barèmes IR 2024–2026
+│   └── micro-abattements.json  Abattements micro-entreprise
+├── docs/
+│   ├── simulateurs.md          Documentation métier de chaque simulateur
+│   └── architecture.md         Architecture technique
+├── cloud.md                    Instructions déploiement Cloudflare
+└── README.md                   Vue d'ensemble projet
 ```
 
 ## Règles de code
 
-- **Pas de JS/CSS inline** dans `index.html` — tout passe par les fichiers dédiés.
-- **Logique pure séparée de l'UI** : `fiscal.js` ne manipule pas le DOM ; `ui.js` ne calcule pas.
+- **Pas de JS/CSS inline** dans le HTML — tout passe par les fichiers dédiés.
+- **Logique pure séparée de l'UI** : `fiscal.js` / `comparateur-immo.js` ne manipulent pas le DOM.
 - **Modules ES** : utiliser `import`/`export`. Pas de variables globales.
-- **Barèmes IR** (2024–2026) et **abattements micro** (71% / 50% / 34%) dans `js/data.js`.
+- **Barèmes IR** (2024–2026) et **abattements micro** (71% / 50% / 34%) dans `js/data.js` avec fallback inline.
 
 ## Déploiement
-
-Avant de pousser sur GitHub :
 
 ```bash
 cd ~/projects/roxabi-simulation
@@ -46,17 +67,28 @@ npx wrangler pages deploy . --project-name=invest-sim --branch=main --commit-dir
 
 - **Aucun secret** (token, clé, mot de passe) ne doit être commité.
 - `.gitignore` est configuré pour ignorer `.env`, `.wrangler/`, logs.
-- Si un fichier sensible est créé par erreur, le retirer immédiatement de l'historique git (`git filter-repo` ou force-push rebase).
+- Si un fichier sensible est créé par erreur, le retirer immédiatement de l'historage git (`git filter-repo` ou force-push rebase).
 
 ## Workflow
 
 1. Modifier les fichiers source (HTML, CSS, JS).
 2. Déployer sur Cloudflare Pages pour tester en live.
 3. `git add`, `git commit`, `git push` vers `origin/main`.
+4. Mettre à jour `docs/simulateurs.md` si la logique métier change.
 
-## Notes métier
+## Notes métier — Calculateur d'impôt
 
 - **TMI** = dernière tranche active du barème IR appliquée au QF.
 - Dividendes en **flat tax** (PFU) ne sont pas intégrés au revenu imposable pour le calcul de la TMI.
 - Dividendes en **régime réel** : intégration avec abattement de 40%.
 - Calcul théorique avant décote et réductions éventuelles.
+- Persistance : 5 simulations max par onglet (URL hash), LRU pruning.
+
+## Notes métier — Comparateur immobilier
+
+- **Patrimoine achat(t)** = `(Prix + Travaux) × (1 + plus-value)^t - CRD(t) + potAcheteur(t)`
+- **Patrimoine loc(t)** = `potLoc(t)` (apport + notaire + travaux initial + épargnes accumulées)
+- **CRD** : formule d'amortissement standard, capital restant dû déduit de la valeur de revente.
+- **Différence de cash-flow** : `depenseAchat - depenseLoc` → placée du côté qui **dépense le moins**, au rendement défini.
+- **Frais de notaire** : auto-calculés (% du prix) avec affichage live du montant €.
+- Crédit et placement supposés constants sur l'horizon. Pas de fiscalité ni inflation modélisées.
