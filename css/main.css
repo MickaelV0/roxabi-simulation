@@ -278,7 +278,7 @@ th { color: var(--text-muted); font-weight: 500; }
 #theme-toggle {
   display: flex; align-items: center; justify-content: center;
   width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border);
-  background: var(--surface); cursor: pointer; font-size: 16px;
+  background: var(--surface); color: var(--text); cursor: pointer;
   transition: all 0.2s; flex-shrink: 0;
   padding: 0;
   position: static;
