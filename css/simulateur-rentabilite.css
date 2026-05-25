@@ -50,6 +50,7 @@
 .charge-row input[type="number"] {
   flex: 1;
   margin-bottom: 0;
+  min-width: 100px;
 }
 
 .charge-row select.unit-select {

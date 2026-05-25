@@ -223,6 +223,21 @@ body {
 [data-theme="light"] #theme-toggle .icon-sun { display: block; }
 [data-theme="light"] #theme-toggle .icon-moon { display: none; }
 
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+.topbar-github {
+  display: flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text);
+  transition: all 0.2s; flex-shrink: 0;
+  text-decoration: none;
+}
+.topbar-github:hover { border-color: var(--accent); background: var(--accent-dim); }
+
 /* Footer */
 .site-footer {
   border-top: 1px solid var(--border);
