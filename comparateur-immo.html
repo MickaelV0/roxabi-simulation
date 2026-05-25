@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Acheter ou Louer + Investir ? — Roxabi Simulation</title>
+<title>Rentabilité RP</title>
 <link rel="stylesheet" href="css/main.css">
 <link rel="stylesheet" href="css/comparateur-immo.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
@@ -19,9 +19,9 @@
     Roxabi Simulation
   </a>
   <div class="topbar-nav">
-    <a href="simulateur.html">Calculateur</a>
-    <a href="comparateur-immo.html" class="active">Comparateur</a>
-    <a href="simulateur-rentabilite.html">Rentabilité</a>
+    <a href="simulateur.html">TMI</a>
+    <a href="comparateur-immo.html" class="active">Rentabilité RP</a>
+    <a href="simulateur-rentabilite.html">Rentabilité locative</a>
   </div>
   <button id="theme-toggle">
     <span class="icon-sun"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></span>
@@ -30,137 +30,142 @@
 </nav>
 
 <div class="container container-wide">
-  <h1>Acheter ou Louer + Investir ?</h1>
+  <h1>Rentabilité RP</h1>
   <p class="subtitle">Comparez l'achat d'un bien immobilier avec la stratégie "louer et investir la différence" sur un horizon donné.</p>
 
   <div class="layout-grid">
+    <!-- Col 1 : Paramètres achat -->
     <div class="inputs-col">
+      <div class="card param-card">
+        <h2>Paramètres achat</h2>
+        <label for="prix">Prix du bien (€)</label>
+        <input id="prix" type="number" min="0" step="1000" placeholder="300000" value="300000">
 
-  <div class="two-col">
-    <!-- Colonne Achat -->
-    <div class="card param-card">
-      <h2>Paramètres achat</h2>
-      <label for="prix">Prix du bien (€)</label>
-      <input id="prix" type="number" min="0" step="1000" placeholder="300000" value="300000">
+        <label for="notaire-pct">Frais de notaire (%)</label>
+        <input id="notaire-pct" type="number" min="0" max="20" step="0.1" placeholder="8" value="8">
+        <span class="muted" id="notaire-display">≈ 24 000 €</span>
 
-      <label for="notaire-pct">Frais de notaire (%)</label>
-      <input id="notaire-pct" type="number" min="0" max="20" step="0.1" placeholder="8" value="8">
-      <span class="muted" id="notaire-display">≈ 24 000 €</span>
+        <label for="apport">Apport (€)</label>
+        <input id="apport" type="number" min="0" step="1000" placeholder="50000" value="50000">
 
-      <label for="apport">Apport (€)</label>
-      <input id="apport" type="number" min="0" step="1000" placeholder="50000" value="50000">
-
-      <div class="row">
-        <div>
-          <label for="taux-credit">Taux crédit (% annuel)</label>
-          <input id="taux-credit" type="number" min="0" step="0.05" placeholder="3.5" value="3.5">
+        <div class="row">
+          <div>
+            <label for="taux-credit">Taux crédit (% annuel)</label>
+            <input id="taux-credit" type="number" min="0" step="0.05" placeholder="3.5" value="3.5">
+          </div>
+          <div>
+            <label for="duree-credit">Durée (années)</label>
+            <input id="duree-credit" type="number" min="1" max="30" step="1" placeholder="20" value="20">
+          </div>
         </div>
-        <div>
-          <label for="duree-credit">Durée (années)</label>
-          <input id="duree-credit" type="number" min="1" max="30" step="1" placeholder="20" value="20">
+
+        <label for="travaux">Travaux (€)</label>
+        <input id="travaux" type="number" min="0" step="1000" placeholder="0" value="0">
+
+        <div class="row">
+          <div>
+            <label for="entretien">Entretien annuel (€)</label>
+            <input id="entretien" type="number" min="0" step="100" placeholder="1500" value="1500">
+          </div>
+          <div>
+            <label for="taxe">Taxe foncière annuelle (€)</label>
+            <input id="taxe" type="number" min="0" step="100" placeholder="1200" value="1200">
+          </div>
         </div>
-      </div>
 
-      <label for="travaux">Travaux (€)</label>
-      <input id="travaux" type="number" min="0" step="1000" placeholder="0" value="0">
+        <label for="plus-value">Plus-value annuelle du bien (%)</label>
+        <input id="plus-value" type="number" min="-10" max="20" step="0.1" placeholder="3" value="3">
 
-      <div class="row">
-        <div>
-          <label for="entretien">Entretien annuel (€)</label>
-          <input id="entretien" type="number" min="0" step="100" placeholder="1500" value="1500">
+        <div class="fiscalite-row" style="margin-top:8px;">
+          <label for="cashflow-rate" style="margin-bottom:0;">Rendement appliqué au cashflow (% annuel)</label>
+          <button type="button" class="info-tooltip" data-tooltip="Taux annuel auquel les cashflows nets (vs locataire) sont composés pour le calcul du montant récupéré. Représente le coût d'opportunité du capital de l'acheteur. Le TRI, lui, est indépendant de ce taux." aria-label="Aide rendement cashflow">i</button>
         </div>
-        <div>
-          <label for="taxe">Taxe foncière annuelle (€)</label>
-          <input id="taxe" type="number" min="0" step="100" placeholder="1200" value="1200">
+        <input id="cashflow-rate" type="number" min="0" max="20" step="0.1" placeholder="5" value="5">
+      </div>
+    </div><!-- /inputs-col col 1 -->
+
+    <!-- Col 2 : Paramètres location + Inflation -->
+    <div class="inputs-col">
+      <div class="card param-card">
+        <h2>Paramètres location</h2>
+        <label for="loyer">Loyer mensuel (€)</label>
+        <input id="loyer" type="number" min="0" step="50" placeholder="1200" value="1200">
+
+        <label for="charges-loc">Charges locatives mensuelles (€)</label>
+        <input id="charges-loc" type="number" min="0" step="10" placeholder="100" value="100">
+
+        <label for="rendement">Rendement placement (% annuel)</label>
+        <input id="rendement" type="number" min="0" max="20" step="0.5" placeholder="5" value="5">
+        <span class="muted">Utilisé pour la table apples-to-apples (placement de l'apport + économies côté locataire).</span>
+
+        <div class="fiscalite-row">
+          <label class="checkbox-row" for="flat-taxe">
+            <input id="flat-taxe" type="checkbox">
+            <span>Appliquer la flat tax (PFU 30&nbsp;%) sur les plus-values du placement</span>
+          </label>
+          <button type="button" id="flat-taxe-info-btn" class="info-btn" aria-label="Aide fiscalité placement" aria-expanded="false">?</button>
         </div>
-      </div>
-
-      <label for="plus-value">Plus-value annuelle du bien (%)</label>
-      <input id="plus-value" type="number" min="-10" max="20" step="0.1" placeholder="3" value="3">
-    </div>
-
-    <!-- Colonne Location -->
-    <div class="card param-card">
-      <h2>Paramètres location</h2>
-      <label for="loyer">Loyer mensuel (€)</label>
-      <input id="loyer" type="number" min="0" step="50" placeholder="1200" value="1200">
-
-      <label for="charges-loc">Charges locatives mensuelles (€)</label>
-      <input id="charges-loc" type="number" min="0" step="10" placeholder="100" value="100">
-
-      <label for="rendement">Rendement placement (% annuel)</label>
-      <input id="rendement" type="number" min="0" max="20" step="0.5" placeholder="5" value="5">
-
-      <div class="fiscalite-row">
-        <label class="checkbox-row" for="flat-taxe">
-          <input id="flat-taxe" type="checkbox">
-          <span>Appliquer la flat tax (PFU 30&nbsp;%) sur les plus-values du placement</span>
-        </label>
-        <button type="button" id="flat-taxe-info-btn" class="info-btn" aria-label="Aide fiscalité placement" aria-expanded="false">?</button>
-      </div>
-      <div id="flat-taxe-detail" class="info-detail hidden">
-        <p>Le <strong>PFU</strong> (Prélèvement Forfaitaire Unique) impose les plus-values mobilières à 30&nbsp;% (12,8&nbsp;% IR + 17,2&nbsp;% prélèvements sociaux). Plusieurs dispositifs permettent de réduire ou d'éliminer cette fiscalité :</p>
-        <ul>
-          <li><strong>PEA</strong> — exonération d'IR après 5 ans (les 17,2&nbsp;% de PS restent dus)</li>
-          <li><strong>Assurance-vie</strong> — abattement annuel de 4&nbsp;600&nbsp;€ (célibataire) / 9&nbsp;200&nbsp;€ (couple) après 8 ans</li>
-          <li><strong>Donation</strong> — purge totale de la plus-value latente lors de la transmission</li>
-          <li><strong>PER</strong> — déduction à l'entrée, fiscalité reportée à la sortie</li>
-        </ul>
-        <p class="muted">Le simulateur applique la flat tax brute sur les plus-values cumulées si la case est cochée. Adapte selon ta stratégie réelle.</p>
-      </div>
-
-      <div class="param-card-footer">
-        <label for="horizon">Horizon de comparaison (années)</label>
-        <input id="horizon" type="number" min="1" max="50" step="1" placeholder="20" value="20">
-      </div>
-    </div>
-  </div>
-
-  <div class="card inflation-card">
-    <h2>Inflation annuelle des dépenses</h2>
-    <p class="muted inflation-intro">Indexe loyer, charges, taxe foncière et entretien chaque année. Mensualité et plus-value restent indépendantes.</p>
-
-    <div class="inflation-top">
-      <div>
-        <label for="inflation-globale">Inflation globale (% annuel)</label>
-        <input id="inflation-globale" type="number" min="-5" max="20" step="0.1" placeholder="2" value="2">
-      </div>
-      <label class="checkbox-row" for="inflation-avance">
-        <input id="inflation-avance" type="checkbox">
-        <span>Mode avancé : inflation par paramètre</span>
-      </label>
-    </div>
-
-    <div id="inflation-detail" class="inflation-detail hidden">
-      <div class="row">
-        <div>
-          <label for="infl-loyer">Inflation loyer (%)</label>
-          <input id="infl-loyer" type="number" min="-5" max="20" step="0.1" value="2">
+        <div id="flat-taxe-detail" class="info-detail hidden">
+          <p>Le <strong>PFU</strong> (Prélèvement Forfaitaire Unique) impose les plus-values mobilières à 30&nbsp;% (12,8&nbsp;% IR + 17,2&nbsp;% prélèvements sociaux). Plusieurs dispositifs permettent de réduire ou d'éliminer cette fiscalité :</p>
+          <ul>
+            <li><strong>PEA</strong> — exonération d'IR après 5 ans (les 17,2&nbsp;% de PS restent dus)</li>
+            <li><strong>Assurance-vie</strong> — abattement annuel de 4&nbsp;600&nbsp;€ (célibataire) / 9&nbsp;200&nbsp;€ (couple) après 8 ans</li>
+            <li><strong>Donation</strong> — purge totale de la plus-value latente lors de la transmission</li>
+            <li><strong>PER</strong> — déduction à l'entrée, fiscalité reportée à la sortie</li>
+          </ul>
+          <p class="muted">Le simulateur applique la flat tax brute sur les plus-values cumulées si la case est cochée. Adapte selon ta stratégie réelle.</p>
         </div>
-        <div>
-          <label for="infl-charges">Inflation charges loc (%)</label>
-          <input id="infl-charges" type="number" min="-5" max="20" step="0.1" value="2">
+
+        <div class="param-card-footer">
+          <label for="horizon">Horizon de comparaison (années)</label>
+          <input id="horizon" type="number" min="1" max="50" step="1" placeholder="20" value="20">
         </div>
       </div>
-      <div class="row">
-        <div>
-          <label for="infl-taxe">Inflation taxe foncière (%)</label>
-          <input id="infl-taxe" type="number" min="-5" max="20" step="0.1" value="2">
+
+      <div class="card inflation-card">
+        <h2>Inflation annuelle des dépenses</h2>
+        <p class="muted inflation-intro">Indexe loyer, charges, taxe foncière et entretien chaque année. Mensualité et plus-value restent indépendantes.</p>
+
+        <div class="inflation-top">
+          <div>
+            <label for="inflation-globale">Inflation globale (% annuel)</label>
+            <input id="inflation-globale" type="number" min="-5" max="20" step="0.1" placeholder="2" value="2">
+          </div>
+          <label class="checkbox-row" for="inflation-avance">
+            <input id="inflation-avance" type="checkbox">
+            <span>Mode avancé : inflation par paramètre</span>
+          </label>
         </div>
-        <div>
-          <label for="infl-entretien">Inflation entretien (%)</label>
-          <input id="infl-entretien" type="number" min="-5" max="20" step="0.1" value="2">
+
+        <div id="inflation-detail" class="inflation-detail hidden">
+          <div class="row">
+            <div>
+              <label for="infl-loyer">Inflation loyer (%)</label>
+              <input id="infl-loyer" type="number" min="-5" max="20" step="0.1" value="2">
+            </div>
+            <div>
+              <label for="infl-charges">Inflation charges loc (%)</label>
+              <input id="infl-charges" type="number" min="-5" max="20" step="0.1" value="2">
+            </div>
+          </div>
+          <div class="row">
+            <div>
+              <label for="infl-taxe">Inflation taxe foncière (%)</label>
+              <input id="infl-taxe" type="number" min="-5" max="20" step="0.1" value="2">
+            </div>
+            <div>
+              <label for="infl-entretien">Inflation entretien (%)</label>
+              <input id="infl-entretien" type="number" min="-5" max="20" step="0.1" value="2">
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-
-    </div><!-- /inputs-col -->
+    </div><!-- /inputs-col col 2 -->
 
     <div class="results-col" id="result-section">
     <div class="card">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
-        <h2 style="margin:0; color:var(--accent);">Évolution du patrimoine net</h2>
+        <h2 style="margin:0; color:var(--accent);">Performance investisseur (si revente à l'année t)</h2>
         <button id="btn-detail" class="btn btn-outline" style="margin-left:auto;">Détail du calcul</button>
       </div>
       <div class="chart-wrap">
@@ -169,7 +174,8 @@
     </div>
 
     <div class="card">
-      <h2 style="margin:0 0 12px; color:var(--accent);">Détail année par année</h2>
+      <h2 style="margin:0 0 12px; color:var(--accent);">Détail année par année (apples-to-apples)</h2>
+      <p class="muted" style="margin:0 0 10px;">Vue complémentaire : richesse nette de l'acheteur vs un locataire qui place apport + économies au rendement défini. Pas le même calcul que le chart investisseur ci-dessus.</p>
       <div class="table-wrap">
         <table id="result-table">
           <thead>
@@ -178,13 +184,13 @@
               <th>
                 <span class="metric-with-info">
                   Patrimoine achat
-                  <button type="button" class="info-tooltip" data-tooltip="Valeur du bien × (1 + plus-value)^t − Capital restant dû + épargne placée. Inclut l'apport déjà transformé en équity dans la maison." aria-label="Aide patrimoine achat">i</button>
+                  <button type="button" class="info-tooltip" data-tooltip="(Valeur du bien − CRD) + épargne placée côté acheteur. Vision richesse nette absolue, sans coût d'opportunité du capital." aria-label="Aide patrimoine achat">i</button>
                 </span>
               </th>
               <th>
                 <span class="metric-with-info">
                   Patrimoine location
-                  <button type="button" class="info-tooltip" data-tooltip="Apport initial + différences de cash-flow capitalisées chaque année au rendement défini." aria-label="Aide patrimoine location">i</button>
+                  <button type="button" class="info-tooltip" data-tooltip="Apport initial + différences de cash-flow capitalisées chaque année au rendement placement défini." aria-label="Aide patrimoine location">i</button>
                 </span>
               </th>
               <th>
