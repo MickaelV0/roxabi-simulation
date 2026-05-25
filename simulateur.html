@@ -7,7 +7,18 @@
 <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-<button id="theme-toggle">◑ light</button>
+<nav class="topbar">
+  <a class="topbar-logo" href="index.html">
+    <svg width="20" height="20" viewBox="0 0 240 170" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <polygon points="120,14 182,82 156,142 120,158 84,142 58,82" fill="none" stroke="currentColor" stroke-width="8" stroke-opacity="0.6"/>
+      <circle cx="120" cy="95" r="20" fill="currentColor" opacity="0.3"/>
+      <circle cx="120" cy="95" r="6" fill="currentColor"/>
+    </svg>
+    Roxabi Simulation
+  </a>
+  <button id="theme-toggle" aria-label="Toggle light/dark theme" title="Toggle light/dark">◑</button>
+</nav>
+
 <div class="container">
   <h1>Calculateur d'impôt</h1>
   <p class="subtitle">Renseignez votre foyer fiscal pour obtenir votre impôt sur le revenu et votre tranche marginale.</p>
@@ -125,6 +136,21 @@
     <div id="modal-content"></div>
   </div>
 </div>
+
+<footer class="site-footer">
+  <div class="footer-brand">
+    <svg width="16" height="14" viewBox="0 0 240 170" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <polygon points="120,14 182,82 156,142 120,158 84,142 58,82" fill="none" stroke="currentColor" stroke-width="8" stroke-opacity="0.5"/>
+      <circle cx="120" cy="95" r="20" fill="currentColor" opacity="0.3"/>
+    </svg>
+    Made with love by Roxabi
+  </div>
+  <div class="footer-links">
+    <a href="https://github.com/MickaelV0/roxabi-simulation" target="_blank" rel="noopener">GitHub</a>
+    <span class="footer-sep">&#183;</span>
+    <a href="index.html">Accueil</a>
+  </div>
+</footer>
 
 <script src="js/theme.js"></script>
 <script type="module" src="js/main.js"></script>
