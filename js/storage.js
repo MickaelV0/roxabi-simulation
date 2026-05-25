@@ -6,8 +6,10 @@ function metaKey(id) { return `${PREFIX}:meta:${TYPE}:${id}`; }
 function dataKey(id) { return `${PREFIX}:data:${TYPE}:${id}`; }
 
 function getMeta(id) {
-  const raw = localStorage.getItem(metaKey(id));
-  return raw ? JSON.parse(raw) : null;
+  try {
+    const raw = localStorage.getItem(metaKey(id));
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
 }
 
 function setMeta(id, meta) {
@@ -24,15 +26,20 @@ function pruneIfNeeded() {
   const all = getAllIds();
   if (all.length < MAX) return;
   const metas = all.map(id => ({ id, ...getMeta(id) }));
-  metas.sort((a, b) => (a.lastUsed || a.created || 0) - (b.lastUsed || a.created || 0));
+  metas.sort((a, b) => (a.lastUsed || a.created || 0) - (b.lastUsed || b.created || 0));
   const toRemove = metas.slice(0, metas.length - MAX + 1);
   for (const s of toRemove) {
-    remove(s.id);
+    removeSim(s.id);
   }
 }
 
 function generateId() {
   return 'sim-' + Math.random().toString(36).slice(2, 8);
+}
+
+function removeSim(id) {
+  localStorage.removeItem(dataKey(id));
+  localStorage.removeItem(metaKey(id));
 }
 
 export function initTab() {
@@ -54,15 +61,18 @@ export function save(id, inputs) {
 }
 
 export function load(id) {
-  const raw = localStorage.getItem(dataKey(id));
-  if (!raw) return null;
-  touch(id);
-  return JSON.parse(raw);
+  try {
+    const raw = localStorage.getItem(dataKey(id));
+    if (!raw) return null;
+    touch(id);
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
 }
 
 export function remove(id) {
-  localStorage.removeItem(dataKey(id));
-  localStorage.removeItem(metaKey(id));
+  removeSim(id);
 }
 
 export function rename(id, name) {

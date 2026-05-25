@@ -34,19 +34,22 @@ function updateSimName() {
 }
 
 async function run() {
-  const inputs = getInputs();
-  const result = computeFiscal(inputs);
-  renderResults(result);
-  buildModal(inputs, result);
-  save(tabId, inputs);
-  hasCalculatedOnce = true;
-  populateSelector();
+  try {
+    const inputs = getInputs();
+    const result = computeFiscal(inputs);
+    renderResults(result);
+    buildModal(inputs, result);
+    save(tabId, inputs);
+    hasCalculatedOnce = true;
+    populateSelector();
+  } catch (e) {
+    console.error('Run failed:', e);
+  }
 }
 
 async function init() {
   await loadData();
 
-  // Restore saved data on load
   const saved = load(tabId);
   if (saved) {
     setInputs(saved);
